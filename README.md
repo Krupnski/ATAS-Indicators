@@ -34,7 +34,7 @@ Marks 25-point level intervals on an ES futures chart based on a user-provided r
 
 3. Copy the compiled DLL to the ATAS indicators directory:
    ```bash
-   copy bin\Debug\net8.0\ATAS.Indicators.dll %APPDATA%\ATAS\Indicators\
+   copy bin\Debug\net8.0\CustomIndicators.dll %APPDATA%\ATAS\Indicators\
    ```
 
 4. Restart ATAS or reload indicators

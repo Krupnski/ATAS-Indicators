@@ -46,8 +46,6 @@ namespace ATAS.Indicators.Technical
 			: base(true)
 		{
 			DenyToChangePanel = true;
-			EnableCustomDrawing = true;
-			SubscribeToDrawingEvents(DrawingLayouts.Historical);
 		}
 
 		#endregion
@@ -65,14 +63,6 @@ namespace ATAS.Indicators.Technical
 				_lastCalculatedBar = bar;
 				InitializeLevels();
 			}
-		}
-
-		protected override void OnRender(RenderContext context, DrawingLayouts layout)
-		{
-			if (ChartInfo == null || Container == null)
-				return;
-
-			// Levels are drawn via LineSeries, so no custom rendering needed
 		}
 
 		#endregion
@@ -98,7 +88,6 @@ namespace ATAS.Indicators.Technical
 			// Determine a range around current price to draw levels
 			// Draw levels from 10 intervals below to 10 intervals above current price
 			var baseLevel = Math.Floor(currentPrice / levelInterval) * levelInterval;
-			var numberOfLevels = 21; // 10 below, current, 10 above
 
 			for (int i = -10; i <= 10; i++)
 			{
