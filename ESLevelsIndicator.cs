@@ -21,6 +21,8 @@ namespace ATAS.Indicators.Custom
         private readonly List<decimal> _calculatedLevels = new List<decimal>();
         private const decimal LEVEL_INTERVAL = 25.0m;
         private readonly Pen _levelPen;
+        private readonly Font _levelFont;
+        private readonly SolidBrush _textBrush;
 
         #endregion
 
@@ -45,6 +47,7 @@ namespace ATAS.Indicators.Custom
                     return;
 
                 _ratio = value;
+                // RecalculateValues() is provided by the ATAS Indicator base class
                 RecalculateValues();
             }
         }
@@ -103,8 +106,10 @@ namespace ATAS.Indicators.Custom
             // Subscribe to drawing events for rendering levels
             SubscribeToDrawingEvents(DrawingLayouts.Final);
 
-            // Initialize the pen for drawing levels
+            // Initialize graphics resources (reused to prevent memory leaks)
             _levelPen = new Pen(LevelColor, LineWidth);
+            _levelFont = new Font("Arial", 8);
+            _textBrush = new SolidBrush(LevelColor);
 
             // Set the panel to overlay on the main chart
             Panel = IndicatorDataProvider.CandlePanel;
@@ -188,9 +193,10 @@ namespace ATAS.Indicators.Custom
                 if (context == null || ChartInfo == null)
                     return;
 
-                // Update pen color and width in case user changed settings
+                // Update pen, brush color and width in case user changed settings
                 _levelPen.Color = LevelColor;
                 _levelPen.Width = LineWidth;
+                _textBrush.Color = LevelColor;
 
                 // Get visible bar range
                 var firstVisibleBar = ChartInfo.FirstVisibleBarNumber;
@@ -217,11 +223,9 @@ namespace ATAS.Indicators.Custom
                             // Draw the horizontal line
                             context.DrawLine(_levelPen, x1, y, x2, y);
 
-                            // Optionally draw the level price as text (small label)
+                            // Draw the level price as text (small label)
                             var levelText = level.ToString("F2");
-                            var font = new Font("Arial", 8);
-                            var textBrush = new SolidBrush(LevelColor);
-                            context.DrawString(levelText, font, textBrush, x2 - 50, y - 15);
+                            context.DrawString(levelText, _levelFont, _textBrush, x2 - 50, y - 15);
                         }
                     }
                     catch
@@ -246,6 +250,8 @@ namespace ATAS.Indicators.Custom
             if (disposing)
             {
                 _levelPen?.Dispose();
+                _levelFont?.Dispose();
+                _textBrush?.Dispose();
             }
             base.Dispose(disposing);
         }

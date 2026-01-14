@@ -49,3 +49,6 @@ packages/
 *.user
 *.userosscache
 *.sln.docstates
+
+# Testing/Development
+ATASStub.cs
